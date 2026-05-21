@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 
-// Supabase redirects here after OAuth. Exchanges the code for a session cookie.
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
   const code = searchParams.get("code");
@@ -10,7 +9,22 @@ export async function GET(req: NextRequest) {
   if (code) {
     const supabase = await createServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+
     if (!error) {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        // Auto-create profile if it doesn't exist yet
+        await supabase.from("profiles").upsert({
+          id: user.id,
+          full_name: user.user_metadata.full_name ?? user.user_metadata.name ?? null,
+          avatar_url: user.user_metadata.avatar_url ?? null,
+          subscription_tier: "free",
+          generations_used: 0,
+          generations_limit: 3,
+        }, { onConflict: "id", ignoreDuplicates: true });
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
