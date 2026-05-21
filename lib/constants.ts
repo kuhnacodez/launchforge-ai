@@ -1,0 +1,116 @@
+import type { Industry, PricingModel, PricingPlan } from "@/types";
+
+export const INDUSTRIES: { value: Industry; label: string; emoji: string }[] = [
+  { value: "fitness", label: "Fitness & Health", emoji: "💪" },
+  { value: "fintech", label: "Fintech", emoji: "💳" },
+  { value: "edtech", label: "Education", emoji: "📚" },
+  { value: "healthtech", label: "Healthtech", emoji: "🏥" },
+  { value: "ecommerce", label: "E-Commerce", emoji: "🛒" },
+  { value: "productivity", label: "Productivity", emoji: "⚡" },
+  { value: "analytics", label: "Analytics", emoji: "📊" },
+  { value: "social", label: "Social", emoji: "💬" },
+  { value: "marketplace", label: "Marketplace", emoji: "🏪" },
+  { value: "other", label: "Other", emoji: "🚀" },
+];
+
+export const PRICING_MODELS: { value: PricingModel; label: string; description: string }[] = [
+  { value: "subscription", label: "Subscription", description: "Monthly or yearly recurring billing" },
+  { value: "one-time", label: "One-Time Purchase", description: "Single payment for lifetime access" },
+  { value: "usage-based", label: "Usage-Based", description: "Pay per API call, seat, or action" },
+  { value: "freemium", label: "Freemium", description: "Free tier with paid upgrades" },
+];
+
+export const FEATURE_CATEGORIES = [
+  "User Authentication",
+  "Subscription Billing",
+  "Admin Dashboard",
+  "Analytics & Reporting",
+  "Email Notifications",
+  "File Uploads",
+  "AI Integration",
+  "Real-time Updates",
+  "Mobile App",
+  "API Access",
+  "Team Management",
+  "White-label Support",
+  "Integrations (Slack, Zapier)",
+  "Custom Onboarding",
+];
+
+export const PRICING_PLANS: PricingPlan[] = [
+  {
+    id: "free",
+    name: "Free",
+    tagline: "Explore the platform",
+    price_monthly: 0,
+    price_yearly: 0,
+    tier: "free",
+    highlighted: false,
+    cta: "Get Started Free",
+    features: [
+      "3 AI generations / month",
+      "Basic app blueprints",
+      "JSON export",
+      "Community support",
+    ],
+    limits: {
+      generations_per_month: 3,
+      saved_projects: 3,
+      export_formats: ["JSON"],
+      support: "Community",
+    },
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    tagline: "For serious builders",
+    price_monthly: 29,
+    price_yearly: 249,
+    tier: "pro",
+    highlighted: true,
+    cta: "Start Pro Trial",
+    stripe_price_id_monthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY,
+    features: [
+      "50 AI generations / month",
+      "Full SaaS blueprints",
+      "Database schema exports",
+      "Stripe billing structure",
+      "Priority support",
+      "Save unlimited projects",
+      "PDF & JSON export",
+      "Custom prompts",
+    ],
+    limits: {
+      generations_per_month: 50,
+      saved_projects: "unlimited",
+      export_formats: ["JSON", "PDF", "Markdown"],
+      support: "Priority email",
+    },
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise",
+    tagline: "For teams & agencies",
+    price_monthly: 99,
+    price_yearly: 999,
+    tier: "enterprise",
+    highlighted: false,
+    cta: "Contact Sales",
+    features: [
+      "Unlimited AI generations",
+      "White-label exports",
+      "Claude API access",
+      "Custom agent workflows",
+      "Team workspaces",
+      "SSO / SAML",
+      "SLA guarantee",
+      "Dedicated support",
+    ],
+    limits: {
+      generations_per_month: "unlimited",
+      saved_projects: "unlimited",
+      export_formats: ["JSON", "PDF", "Markdown", "Figma"],
+      support: "Dedicated CSM",
+    },
+  },
+];
