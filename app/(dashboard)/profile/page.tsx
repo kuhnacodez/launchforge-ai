@@ -19,6 +19,18 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  const handleManageBilling = async () => {
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/billing/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.portal_url) window.location.href = data.portal_url;
+    } finally {
+      setPortalLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (profile?.full_name) setFullName(profile.full_name);
@@ -201,7 +213,7 @@ export default function ProfilePage() {
                       <span className="text-muted-foreground">Billing</span>
                       <span>Managed via Stripe</span>
                     </div>
-                    <Button variant="outline" size="sm" className="w-full gap-2" disabled>
+                    <Button variant="outline" size="sm" className="w-full gap-2" onClick={handleManageBilling} loading={portalLoading}>
                       <ExternalLink className="h-3.5 w-3.5" />
                       Manage Billing
                     </Button>

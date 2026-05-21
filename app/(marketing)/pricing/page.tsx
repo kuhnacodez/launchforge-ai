@@ -2,14 +2,16 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Check, Zap, HelpCircle } from "lucide-react";
+import { Check, Zap, HelpCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { PRICING_PLANS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 const FAQ = [
   {
@@ -36,6 +38,27 @@ const FAQ = [
 
 export default function PricingPage() {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly");
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleUpgrade = async (planId: string) => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
+
+    setCheckoutLoading(planId);
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan_id: planId, billing_period: billingPeriod }),
+      });
+      const data = await res.json();
+      if (data.checkout_url) window.location.href = data.checkout_url;
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -135,11 +158,16 @@ export default function PricingPage() {
                     <Button
                       variant={plan.highlighted ? "gradient" : "outline"}
                       className="w-full mb-6"
-                      asChild
+                      disabled={checkoutLoading !== null}
+                      onClick={() => {
+                        if (plan.tier === "free") { router.push("/signup"); return; }
+                        if (plan.tier === "enterprise") { router.push("/contact"); return; }
+                        handleUpgrade(plan.tier);
+                      }}
                     >
-                      <Link href={plan.tier === "enterprise" ? "/contact" : "/signup"}>
-                        {plan.cta}
-                      </Link>
+                      {checkoutLoading === plan.tier ? (
+                        <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Redirecting...</>
+                      ) : plan.cta}
                     </Button>
 
                     <Separator className="mb-6" />
