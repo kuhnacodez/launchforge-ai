@@ -62,62 +62,59 @@ export function GenerationForm({ onGenerate, isGenerating, disabled = false }: G
         </p>
       </div>
 
-      {/* Industry + Pricing row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Industry */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Industry</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {INDUSTRIES.map((ind) => (
-              <button
-                key={ind.value}
-                type="button"
-                onClick={() => setIndustry(ind.value)}
-                className={cn(
-                  "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-all",
-                  industry === ind.value
-                    ? "border-violet-500 bg-violet-500/10 text-violet-400"
-                    : "border-border/50 hover:border-border hover:bg-accent"
-                )}
-              >
-                <span>{ind.emoji}</span>
-                <span className="truncate">{ind.label}</span>
-              </button>
-            ))}
-          </div>
+      {/* Industry */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Industry</Label>
+        <div className="grid grid-cols-3 gap-2">
+          {INDUSTRIES.map((ind) => (
+            <button
+              key={ind.value}
+              type="button"
+              onClick={() => setIndustry(ind.value)}
+              className={cn(
+                "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-all",
+                industry === ind.value
+                  ? "border-violet-500 bg-violet-500/10 text-violet-400"
+                  : "border-border/50 hover:border-border hover:bg-accent"
+              )}
+            >
+              <span>{ind.emoji}</span>
+              <span className="truncate">{ind.label}</span>
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Pricing model */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Pricing Model</Label>
-          <div className="space-y-2">
-            {PRICING_MODELS.map((model) => (
-              <button
-                key={model.value}
-                type="button"
-                onClick={() => setPricingModel(model.value)}
-                className={cn(
-                  "w-full flex items-start gap-3 rounded-lg border px-3 py-2.5 text-left transition-all",
-                  pricingModel === model.value
-                    ? "border-violet-500 bg-violet-500/10"
-                    : "border-border/50 hover:border-border hover:bg-accent"
+      {/* Pricing model */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Pricing Model</Label>
+        <div className="grid grid-cols-2 gap-2">
+          {PRICING_MODELS.map((model) => (
+            <button
+              key={model.value}
+              type="button"
+              onClick={() => setPricingModel(model.value)}
+              className={cn(
+                "flex items-start gap-3 rounded-lg border px-3 py-2.5 text-left transition-all",
+                pricingModel === model.value
+                  ? "border-violet-500 bg-violet-500/10"
+                  : "border-border/50 hover:border-border hover:bg-accent"
+              )}
+            >
+              <div className={cn(
+                "mt-0.5 h-4 w-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center",
+                pricingModel === model.value ? "border-violet-500" : "border-muted-foreground"
+              )}>
+                {pricingModel === model.value && (
+                  <div className="h-2 w-2 rounded-full bg-violet-500" />
                 )}
-              >
-                <div className={cn(
-                  "mt-0.5 h-4 w-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center",
-                  pricingModel === model.value ? "border-violet-500" : "border-muted-foreground"
-                )}>
-                  {pricingModel === model.value && (
-                    <div className="h-2 w-2 rounded-full bg-violet-500" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-xs font-medium">{model.label}</p>
-                  <p className="text-xs text-muted-foreground">{model.description}</p>
-                </div>
-              </button>
-            ))}
-          </div>
+              </div>
+              <div>
+                <p className="text-xs font-medium">{model.label}</p>
+                <p className="text-xs text-muted-foreground">{model.description}</p>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 
