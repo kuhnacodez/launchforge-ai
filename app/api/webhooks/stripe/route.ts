@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import type Stripe from "stripe";
 
 const TIER_LIMITS: Record<string, number> = {
@@ -15,7 +15,7 @@ function tierFromPriceId(priceId: string): string {
   return "free";
 }
 
-async function upsertSubscription(supabase: Awaited<ReturnType<typeof createServerClient>>, subscription: Stripe.Subscription) {
+async function upsertSubscription(supabase: ReturnType<typeof createServiceClient>, subscription: Stripe.Subscription) {
   const userId = subscription.metadata.user_id;
   if (!userId) return;
 
@@ -30,7 +30,7 @@ async function upsertSubscription(supabase: Awaited<ReturnType<typeof createServ
   }).eq("id", userId);
 }
 
-async function cancelSubscription(supabase: Awaited<ReturnType<typeof createServerClient>>, subscription: Stripe.Subscription) {
+async function cancelSubscription(supabase: ReturnType<typeof createServiceClient>, subscription: Stripe.Subscription) {
   const userId = subscription.metadata.user_id;
   if (!userId) return;
 
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const supabase = await createServerClient();
+  const supabase = createServiceClient();
 
   try {
     switch (event.type) {

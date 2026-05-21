@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url);
@@ -14,8 +15,9 @@ export async function GET(req: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
-        // Auto-create profile if it doesn't exist yet
-        await supabase.from("profiles").upsert({
+        // Auto-create profile if it doesn't exist yet (use service role to bypass RLS)
+        const serviceClient = createServiceClient();
+        await serviceClient.from("profiles").upsert({
           id: user.id,
           full_name: user.user_metadata.full_name ?? user.user_metadata.name ?? null,
           avatar_url: user.user_metadata.avatar_url ?? null,
