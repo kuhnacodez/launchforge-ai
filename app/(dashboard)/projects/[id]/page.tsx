@@ -7,6 +7,7 @@ import { ArrowLeft, Trash2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { OutputTabs } from "@/components/generator/output-tabs";
+import { BuildPanel } from "@/components/builder/build-panel";
 import { formatDate } from "@/lib/utils";
 import type { GenerationOutput } from "@/types";
 
@@ -98,7 +99,8 @@ export default function ProjectDetailPage() {
         </div>
       </motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="space-y-8">
+        <BuildPanel output={project.output} projectId={project.id} />
         <OutputTabs output={project.output} />
       </motion.div>
     </div>
