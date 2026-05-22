@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Hammer, CheckCircle2, Circle, Loader2, Download, Github, ExternalLink, AlertTriangle, Rocket } from "lucide-react";
+import { Hammer, CheckCircle2, Circle, Loader2, Download, GitBranch, ExternalLink, AlertTriangle, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -221,14 +221,14 @@ export function BuildPanel({ output, projectId }: BuildPanelProps) {
             {repoUrl ? (
               <Button variant="outline" className="gap-2" asChild>
                 <a href={repoUrl} target="_blank" rel="noopener noreferrer">
-                  <Github className="h-4 w-4" />
+                  <GitBranch className="h-4 w-4" />
                   View on GitHub
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </Button>
             ) : (
               <Button variant="outline" className="gap-2" disabled>
-                <Github className="h-4 w-4" />
+                <GitBranch className="h-4 w-4" />
                 No GitHub token provided
               </Button>
             )}
