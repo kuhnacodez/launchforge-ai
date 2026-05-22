@@ -57,9 +57,9 @@ Requirements:
 - Fetch relevant data from Supabase browser client
 - Use Tailwind CSS — dark theme, consistent with dashboard style
 - Include proper TypeScript types`,
-            `App context:\n${this.context(output)}\n\nPage to build:\nName: ${page.name}\nRoute: ${page.route}\nDescription: ${page.description ?? ""}\nComponents: ${page.components?.join(", ") ?? "standard"}`
+            `App context:\n${this.context(output)}\n\nPage to build:\nName: ${page.name}\nRoute: ${page.path}\nDescription: ${page.description ?? ""}\nComponents: ${page.components?.join(", ") ?? "standard"}`
           ).then(content => ({
-            path: `app/(dashboard)${page.route}/page.tsx`,
+            path: `app/(dashboard)${page.path}/page.tsx`,
             content,
           }))
         )
