@@ -1,6 +1,6 @@
 import type { GenerationInput, StripePlan, AgentResult } from "@/types";
 import { BaseAgent } from "./base.agent";
-import { callAgentClaude, hasClaudeKey } from "@/lib/agents";
+import { callAgentClaude } from "@/lib/agents";
 
 export class StripeAgent extends BaseAgent<GenerationInput, StripePlan[]> {
   name = "StripeAgent";
@@ -15,19 +15,11 @@ export class StripeAgent extends BaseAgent<GenerationInput, StripePlan[]> {
 }`;
 
   async run(input: GenerationInput): Promise<AgentResult<StripePlan[]>> {
-    try {
-      if (hasClaudeKey()) {
-        const raw = await callAgentClaude(
-          this.systemPrompt,
-          `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nPricing model: ${input.pricing_model}\nFeatures: ${input.features.join(", ")}`
-        );
-        return this.success(JSON.parse(raw) as StripePlan[]);
-      }
-      return this.success(this.mock(input));
-    } catch (err) {
-      console.error("[StripeAgent] falling back to mock:", err);
-      return this.success(this.mock(input));
-    }
+    const raw = await callAgentClaude(
+      this.systemPrompt,
+      `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nPricing model: ${input.pricing_model}\nFeatures: ${input.features.join(", ")}`
+    );
+    return this.success(JSON.parse(raw) as StripePlan[]);
   }
 
   private mock(input: GenerationInput): StripePlan[] {

@@ -13,6 +13,9 @@ export async function callAgentClaude(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
+  if (!hasClaudeKey()) {
+    throw new Error("ANTHROPIC_API_KEY is not configured. Add it to your environment variables.");
+  }
   const client = getClaudeClient();
   const msg = await client.messages.create({
     model: CLAUDE_MODEL,

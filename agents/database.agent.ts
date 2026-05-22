@@ -1,6 +1,6 @@
 import type { GenerationInput, DatabaseTable, AgentResult } from "@/types";
 import { BaseAgent } from "./base.agent";
-import { callAgentClaude, hasClaudeKey } from "@/lib/agents";
+import { callAgentClaude } from "@/lib/agents";
 
 export class DatabaseAgent extends BaseAgent<GenerationInput, DatabaseTable[]> {
   name = "DatabaseAgent";
@@ -13,19 +13,11 @@ export class DatabaseAgent extends BaseAgent<GenerationInput, DatabaseTable[]> {
 }`;
 
   async run(input: GenerationInput): Promise<AgentResult<DatabaseTable[]>> {
-    try {
-      if (hasClaudeKey()) {
-        const raw = await callAgentClaude(
-          this.systemPrompt,
-          `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
-        );
-        return this.success(JSON.parse(raw) as DatabaseTable[]);
-      }
-      return this.success(this.mock(input));
-    } catch (err) {
-      console.error("[DatabaseAgent] falling back to mock:", err);
-      return this.success(this.mock(input));
-    }
+    const raw = await callAgentClaude(
+      this.systemPrompt,
+      `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
+    );
+    return this.success(JSON.parse(raw) as DatabaseTable[]);
   }
 
   private mock(input: GenerationInput): DatabaseTable[] {

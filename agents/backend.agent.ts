@@ -1,6 +1,6 @@
 import type { GenerationInput, ApiRoute, AgentResult } from "@/types";
 import { BaseAgent } from "./base.agent";
-import { callAgentClaude, hasClaudeKey } from "@/lib/agents";
+import { callAgentClaude } from "@/lib/agents";
 
 export class BackendAgent extends BaseAgent<GenerationInput, ApiRoute[]> {
   name = "BackendAgent";
@@ -15,19 +15,11 @@ export class BackendAgent extends BaseAgent<GenerationInput, ApiRoute[]> {
 }`;
 
   async run(input: GenerationInput): Promise<AgentResult<ApiRoute[]>> {
-    try {
-      if (hasClaudeKey()) {
-        const raw = await callAgentClaude(
-          this.systemPrompt,
-          `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
-        );
-        return this.success(JSON.parse(raw) as ApiRoute[]);
-      }
-      return this.success(this.mock(input));
-    } catch (err) {
-      console.error("[BackendAgent] falling back to mock:", err);
-      return this.success(this.mock(input));
-    }
+    const raw = await callAgentClaude(
+      this.systemPrompt,
+      `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
+    );
+    return this.success(JSON.parse(raw) as ApiRoute[]);
   }
 
   private mock(input: GenerationInput): ApiRoute[] {

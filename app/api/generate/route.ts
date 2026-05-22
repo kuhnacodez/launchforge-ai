@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { runGenerationPipeline } from "@/agents/orchestrator";
+import { hasClaudeKey } from "@/lib/agents";
 import type { GenerationInput } from "@/types";
 
 export async function POST(req: NextRequest) {
@@ -27,6 +28,13 @@ export async function POST(req: NextRequest) {
         limit: profile.generations_limit,
       },
       { status: 429 }
+    );
+  }
+
+  if (!hasClaudeKey()) {
+    return NextResponse.json(
+      { error: "AI service is not configured. ANTHROPIC_API_KEY is missing from environment variables." },
+      { status: 503 }
     );
   }
 

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Cpu, Database, CreditCard, Globe, Layout, CheckCircle2, AlertTriangle } from "lucide-react";
 import { GenerationForm } from "@/components/generator/generation-form";
 import { OutputTabs } from "@/components/generator/output-tabs";
+import { BuildPanel } from "@/components/builder/build-panel";
 import { useUser } from "@/hooks/useUser";
 import type { GenerationInput, GenerationOutput } from "@/types";
 
@@ -56,6 +57,8 @@ export default function GeneratePage() {
       if (!response.ok) {
         if (response.status === 429) {
           setError("You've reached your monthly generation limit. Upgrade to Pro for unlimited generations.");
+        } else if (response.status === 503) {
+          setError("AI service is not configured. Add ANTHROPIC_API_KEY to your environment variables, then redeploy.");
         } else {
           setError(data.error ?? "Generation failed. Please try again.");
         }
@@ -209,16 +212,10 @@ export default function GeneratePage() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
+                className="space-y-6"
               >
-                {/* Saved banner */}
                 {savedProjectId && (
-                  <div className="mb-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-                    <span className="text-sm text-emerald-400 font-medium">
-                      Blueprint saved to your projects.{" "}
-                      <Link href={`/projects/${savedProjectId}`} className="underline">View it</Link>
-                    </span>
-                  </div>
+                  <BuildPanel output={output} projectId={savedProjectId} />
                 )}
                 <OutputTabs output={output} />
               </motion.div>

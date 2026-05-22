@@ -1,6 +1,6 @@
 import type { GenerationInput, PageDefinition, AgentResult } from "@/types";
 import { BaseAgent } from "./base.agent";
-import { callAgentClaude, hasClaudeKey } from "@/lib/agents";
+import { callAgentClaude } from "@/lib/agents";
 
 export class FrontendAgent extends BaseAgent<GenerationInput, PageDefinition[]> {
   name = "FrontendAgent";
@@ -14,19 +14,11 @@ export class FrontendAgent extends BaseAgent<GenerationInput, PageDefinition[]> 
 }`;
 
   async run(input: GenerationInput): Promise<AgentResult<PageDefinition[]>> {
-    try {
-      if (hasClaudeKey()) {
-        const raw = await callAgentClaude(
-          this.systemPrompt,
-          `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
-        );
-        return this.success(JSON.parse(raw) as PageDefinition[]);
-      }
-      return this.success(this.mock(input));
-    } catch (err) {
-      console.error("[FrontendAgent] falling back to mock:", err);
-      return this.success(this.mock(input));
-    }
+    const raw = await callAgentClaude(
+      this.systemPrompt,
+      `Startup: "${input.prompt}"\nIndustry: ${input.industry}\nFeatures: ${input.features.join(", ")}`
+    );
+    return this.success(JSON.parse(raw) as PageDefinition[]);
   }
 
   private mock(input: GenerationInput): PageDefinition[] {

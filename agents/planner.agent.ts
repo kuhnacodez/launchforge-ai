@@ -1,6 +1,6 @@
 import type { GenerationInput, AppOverview, AgentResult } from "@/types";
 import { BaseAgent } from "./base.agent";
-import { callAgentClaude, hasClaudeKey } from "@/lib/agents";
+import { callAgentClaude } from "@/lib/agents";
 
 export class PlannerAgent extends BaseAgent<GenerationInput, AppOverview> {
   name = "PlannerAgent";
@@ -24,19 +24,11 @@ export class PlannerAgent extends BaseAgent<GenerationInput, AppOverview> {
 }`;
 
   async run(input: GenerationInput): Promise<AgentResult<AppOverview>> {
-    try {
-      if (hasClaudeKey()) {
-        const raw = await callAgentClaude(
-          this.systemPrompt,
-          `Startup idea: "${input.prompt}"\nIndustry: ${input.industry}\nPricing: ${input.pricing_model}\nFeatures: ${input.features.join(", ")}`
-        );
-        return this.success(JSON.parse(raw) as AppOverview);
-      }
-      return this.success(this.mock(input));
-    } catch (err) {
-      console.error("[PlannerAgent] falling back to mock:", err);
-      return this.success(this.mock(input));
-    }
+    const raw = await callAgentClaude(
+      this.systemPrompt,
+      `Startup idea: "${input.prompt}"\nIndustry: ${input.industry}\nPricing: ${input.pricing_model}\nFeatures: ${input.features.join(", ")}`
+    );
+    return this.success(JSON.parse(raw) as AppOverview);
   }
 
   private mock(input: GenerationInput): AppOverview {
