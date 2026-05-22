@@ -23,7 +23,7 @@ Industry: ${output.overview.industry}
 Target Audience: ${output.overview.target_audience}
 Key Differentiators: ${output.overview.key_differentiators.join(", ")}
 Tech Stack: Next.js, TypeScript, Tailwind CSS, Supabase Auth, Prisma ORM, Stripe, Anthropic Claude
-Pages: ${output.pages.map(p => `${p.name} (${p.route})`).join(", ")}
+Pages: ${output.pages.map(p => `${p.name} (${p.path})`).join(", ")}
 DB Tables: ${output.database_schema.map(t => `${t.name}(${t.columns?.map((c: {name:string}) => c.name).join(",")})`).join(", ")}
 API Routes: ${output.api_routes.map(r => `${r.method} ${r.path}`).join(", ")}
 Stripe Plans: ${output.stripe_plans.map(p => p.name).join(", ")}
